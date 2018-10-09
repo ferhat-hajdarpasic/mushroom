@@ -39,3 +39,35 @@ int main(int argc, char* argv) {
 
     }
 }
+
+void shift_right(unsigned char *ar, int size, int shift)
+{
+    int carry = 0;                              // Clear the initial carry bit.
+    while (shift--) {                           // For each bit to shift ...
+        for (int i = size - 1; i >= 0; --i) {   // For each element of the array from high to low ...
+            int next = (ar[i] & 1) ? 0x80 : 0;  // ... if the low bit is set, set the carry bit.
+            ar[i] = carry | (ar[i] >> 1);       // Shift the element one bit left and addthe old carry.
+            carry = next;                       // Remember the old carry for next time.
+        }   
+    }
+}
+void shift_left(unsigned char *ar, int size, int shift)
+{
+    while (shift--) {                           
+        int carry = 0;                              
+        for (int i = size - 1; i >= 0; --i) {   
+            int next = (ar[i] & 0x80) ? 0x01 : 0;
+            ar[i] = carry | (ar[i] << 1);
+            carry = next;
+        }   
+    }
+}
+int test_shift(int argc, char const *argv[])
+{
+    unsigned char array[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0xff};
+    shift_left(array, sizeof(array), 4);
+    shift_left(array, sizeof(array), 4);
+    shift_left(array, sizeof(array), 8);
+    shift_left(array, sizeof(array), 12);
+    return 0;
+}
