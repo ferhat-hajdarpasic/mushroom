@@ -1,28 +1,41 @@
 #include <stdio.h>
-struct measurement {
-    unsigned short Pm2_5;
-    unsigned short Pm10;
-    unsigned char Noise;
-    unsigned char Solar;
-    unsigned char Battery;
-    unsigned short O3;
-    unsigned short S02;
-    unsigned short NO2;
-    unsigned short CO;
-    unsigned short Ammonia;
-    unsigned short Temperature;
-    unsigned short Humidity;
-    unsigned short Barometric_Pressure;
-    unsigned short VOX_CO2;
-    unsigned short CO2;
-    unsigned char GPS[6];
+#include "measurement.h"
+
+char* schedule[] = {
+    {  0, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12},
+    {  0, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12},
+    {  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8},
+    {  0,  8,  0,  8,  0,  8,  0,  8,  0,  8,  0,  8,  0,  8,  0,  8,  0,  8,  0,  8,  0,  8,  0,  8,  0},
+    {  8,  0,  8,  0,  8,  0,  8,  0,  8,  0,  8,  0,  8,  0,  8,  0,  8,  0,  8,  0,  8,  0,  8,  0,  8},
+    {  0, 12, 12,  0,  0, 12, 12,  0,  0, 12, 12,  0,  0, 12, 12,  0,  0, 12, 12,  0,  0, 12, 12,  0,  0},
+    {  0,  0,  0, 12, 12,  0,  0, 12, 12,  0,  0, 12, 12,  0,  0, 12, 12,  0,  0, 12, 12,  0,  0, 12, 12},
+    {  0, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
+    {  0, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12},
+    {  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 12, 12, 12, 12,  0,  0,  0,  0,  0,  0,  0,  0},
+    {  0, 12, 12, 12, 12,  0,  0,  0,  0,  0,  0,  0,  0, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12},
+    { 12,  0,  0,  0,  0, 12, 12, 12, 12,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
+    {  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 12, 12, 12,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
+    {  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 12, 12, 12, 12,  0,  0,  0,  0},
+    {  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 12, 12, 12, 12},
 };
 
+char frames[] = {
+    0x01, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1d, 0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27
+};
+
+
+char* sendFrame(int frameId) {
+    static char frameToSend[12];
+    frameToSend[0] = frames[frameId];
+    if(schedule[PM2_5][frameId] != 0) {
+        
+    }
+    return frameToSend;
+}
+
 int main(int argc, char* argv) {
-    unsigned short haba = 0xfe;
-    printf("Hello world %d", 0x55);
-    printf("Hello world %d", 0x55);
-    printf("Hello world %d", 0x55);
-    printf("Hello world %d", 0x55);
-    printf("Hello world %d", 0x55);
+    for(int frameIndex = 0; frameIndex < sizeof(frames); frameIndex++) {
+        char frameId = frames[frameIndex];
+
+    }
 }
