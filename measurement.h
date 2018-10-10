@@ -1,5 +1,6 @@
 #ifndef measurement_h
-struct measurement {
+#define measurement_h
+struct Measurement {
     unsigned short Pm2_5;
     unsigned short Pm10;
     unsigned char Noise;
@@ -18,7 +19,7 @@ struct measurement {
     unsigned char GPS[6];
 };
 
-enum sensor {
+enum Sensor {
     PM2_5 = 0, 
     PM10, 
     NOISE, 
