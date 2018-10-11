@@ -100,7 +100,7 @@ void LOG(const char* msg) {
     fflush(stdout);
 }
 
-void LOGBUFFER(const char* buffer, int length) {
+void LOGBUFFER(const unsigned char* buffer, int length) {
     for(int i = 0; i < length; i++) {
         printf("%02x", buffer[i]);
     }
