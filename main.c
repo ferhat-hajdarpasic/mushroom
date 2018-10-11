@@ -94,16 +94,35 @@ unsigned short take(struct Measurement* m, int i) {
     }
 }
 
+void LOG(const char* msg) {
+    printf("%s", msg);
+    printf("\n");
+    fflush(stdout);
+}
+
+void LOGBUFFER(const char* buffer, int length) {
+    for(int i = 0; i < length; i++) {
+        printf("%02x", buffer[i]);
+    }
+    printf("\n");
+    fflush(stdout);
+}
+
 void push(unsigned char* buffer, int sizeOfBuffer, unsigned short value, int bits) {
     shift_left(buffer, sizeOfBuffer, bits);
     buffer[sizeOfBuffer - 1] = (unsigned char) value;
     if(bits == 12) {
         buffer[sizeOfBuffer - 2] = buffer[sizeOfBuffer - 2] | (value >> 8) & 0x0f;
     }
+    LOGBUFFER(buffer, sizeOfBuffer);
 }
 
 unsigned char* frame(unsigned char frameIndex, struct Measurement* measurement ) {
     static unsigned char frameToSend[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    for(int i = 0; i < sizeof(frameToSend); i++) {
+        frameToSend[i] = 0;
+    }
+    LOG("Frame:");
     push(frameToSend, sizeof(frameToSend), frames[frameIndex], 8);
     for(int i = 0; i < sizeof(schedule)/sizeof(frames); i++) {
         int bits = schedule[i][frameIndex];
