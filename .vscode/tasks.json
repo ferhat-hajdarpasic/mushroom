@@ -9,7 +9,7 @@
             "command": "gcc",
             "args": [
                 "-ggdb",
-                "main.c"
+                "*.c"
             ],
             "group": {
                 "kind": "build",
