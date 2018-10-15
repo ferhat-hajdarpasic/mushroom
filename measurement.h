@@ -16,7 +16,7 @@ struct Measurement {
     unsigned short Barometric_Pressure;
     unsigned short VOX_CO2;
     unsigned short CO2;
-    unsigned char GPS[6];
+    //unsigned char GPS[6];
 };
 
 enum Sensor {

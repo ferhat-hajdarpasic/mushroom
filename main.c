@@ -17,7 +17,7 @@ void LOGBUFFER(const unsigned char* buffer, int length) {
 }
 
 int main(int argc, char* argv) {
-    struct Measurement m = {.Pm2_5 = 0x0fff};
+    struct Measurement m = {.CO2 = 0x01};
     for(int frameIndex = 0; frameIndex < sizeof(frames); frameIndex++) {
         LOG("Frame:");
         unsigned char* result = frame(frameIndex, &m);
