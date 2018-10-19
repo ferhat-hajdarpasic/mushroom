@@ -23,5 +23,5 @@ int main(int argc, char* argv) {
         unsigned char* result = frame(frameIndex, &m);
         LOGBUFFER(result, 12);
     }
-    printf("Finished\n");
+    LOG("Finished\n");
 }
