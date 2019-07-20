@@ -1,4 +1,55 @@
-const BufferShift = require('buffershift');
+'use strict';
+
+const shl = (buf /*:Buffer*/, shiftBits /*:number*/) => {
+    if (shiftBits < 0) { return shr(buf, -shiftBits); }
+    if (shiftBits !== (shiftBits | 0)) { throw new Error("shiftBits must be a 32 bit int"); }
+    const bytes = 2 * ((shiftBits >> 4) + ((shiftBits & 15) !== 0));
+    const bits = (bytes * 8) - shiftBits;
+    for (let reg = 0, i = 0; i - bytes < buf.length; i += 2) {
+        reg <<= 16;
+        if (i < buf.length - 1) {
+            reg |= buf.readUInt16BE(i);
+        } else if (i < buf.length) {
+            reg |= buf[i] << 8;
+        }
+        if (i - bytes >= 0) {
+            if (i - bytes < buf.length - 1) {
+                buf.writeUInt16BE((reg >>> bits) & 0xffff, i - bytes);
+            } else {
+                if (i - bytes !== buf.length - 1) { throw new Error(); }
+                buf[i - bytes] = reg >>> (bits + 8);
+            }
+        } else if (i - bytes === -1) {
+            buf[0] = reg >>> bits;
+        }
+    }
+};
+
+const shr = (buf /*:Buffer*/, shiftBits /*:number*/) => {
+    if (shiftBits < 0) { return shl(buf, -shiftBits); }
+    if (shiftBits !== (shiftBits | 0)) { throw new Error("shiftBits must be a 32 bit int"); }
+    const bytes = 2 * ((shiftBits >> 4) + ((shiftBits & 15) !== 0));
+    const bits = 16 - ((bytes * 8) - shiftBits);
+    for (let reg = 0, i = buf.length - 2; i + bytes >= -1; i -= 2) {
+        reg >>>= 16;
+        if (i >= 0) {
+            reg |= buf.readUInt16BE(i) << 16;
+        } else if (i === -1) {
+            reg |= buf[0] << 16;
+        }
+        if (i + bytes + 1 < buf.length) {
+            if (i + bytes >= 0) {
+                buf.writeUInt16BE((reg >>> bits) & 0xffff, i + bytes);
+            } else {
+                if (i + bytes + 1) { throw new Error(); }
+                buf[0] = reg >>> bits;
+            }
+        } else if (i + bytes + 1 === buf.length) {
+            buf[i + bytes] = reg >>> (bits + 8);
+        }
+    }
+};
+
 const schedule = [
     [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12 , 12, 12, 12, 12, 12, 12, 12, 12],
     [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12],
@@ -23,10 +74,10 @@ const frames = [
 
 const names = ["Pm2_5", "Pm10", "Noise", "Solar", "Battery", "O3", "S02", "NO2", "CO", "Ammonia", "Temperature", "Humidity", "Barometric_Pressure", "VOX_CO2", "CO2"];
 
-parse = (data) => {
+const parse = (data) => {
     const buffer = Buffer.from(data, 'hex');
     const frameId = buffer[0];
-    BufferShift.shl(buffer, 8);
+    shl(buffer, 8);
 
     const frameIndex = frames.indexOf(frameId);
     let temp = {};
@@ -38,12 +89,10 @@ parse = (data) => {
         } else if(bits == 12) {
             temp[name] = 16 * buffer[0] + (0xf0 & buffer[1]) / 16;
         }
-        BufferShift.shl(buffer, bits);
+        shl(buffer, bits);
     }
     return temp;
 }
 
-//const result = parse("2647f480999b09d09f0a10a5");
-//console.log(JSON.stringify(result));
-
-module.exports = { parse, names };
+const result = parse("2647f480999b09d09f0a10a5");
+console.log(JSON.stringify(result));
