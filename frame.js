@@ -85,14 +85,37 @@ const parse = (data) => {
         const bits = schedule[measurementIndex][frameIndex];
         const name = names[measurementIndex];
         if(bits == 8) {
-            temp[name] = buffer[0];
+            temp[name] = format(name, buffer[0]);
         } else if(bits == 12) {
-            temp[name] = 16 * buffer[0] + (0xf0 & buffer[1]) / 16;
+            temp[name] = format(name, 16 * buffer[0] + (0xf0 & buffer[1]) / 16);
         }
         shl(buffer, bits);
     }
     return temp;
 }
 
-const result = parse("2647f480999b09d09f0a10a5");
+const metrics = {
+    "Pm2_5": {offset: 0, step: 1, unit:"ug/m3"},
+    "Pm10": {offset: 0, step: 1, unit:"ug/m3"},
+    "Noise": {offset: 0, step: 0.5, unit:"dB"},
+    "Solar": {offset: 0, step: 0.5, unit:"%"},
+    "Battery": {offset: 0, step: 0.5, unit:"%"},
+    "O3": {offset: 0, step: 5, unit:"ppb"},
+    "S02": {offset: 0, step: 10, unit:"ppb"},
+    "NO2": {offset: 0, step: 5, unit:"ppb"},
+    "CO": {offset: 0, step: 0.5, unit:"ppm"},
+    "Ammonia": {offset: 0, step: 0.5, unit:"ppm"},
+    "Temperature": {offset: -100, step: 0.2, unit:"oC"},
+    "Humidity": {offset: 0, step: 0.2, unit:"RH"},
+    "Barometric_Pressure": {offset: 600, step: 0.5, unit:"hPA"},
+    "VOX_CO2": {offset: 0, step: 1, unit:"ppm"},
+    "CO2": {offset: 0, step: 0.5, unit:"ppm"}
+  };
+
+const format = (metric_id, value) => {
+    const result = ((value + metrics[metric_id].offset) * metrics[metric_id].step).toFixed(2);
+    return result;
+}
+
+const result = parse("16012013314a01d0070041e0");
 console.log(JSON.stringify(result));
