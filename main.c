@@ -19,7 +19,7 @@ void LOGBUFFER(const unsigned char *buffer, int length)
     fflush(stdout);
 }
 
-int main(int argc, char *argv)
+int mainSigfox(int argc, char *argv)
 {
     struct Measurement m =
     {
@@ -47,4 +47,6 @@ int main(int argc, char *argv)
         LOGBUFFER(result, 12);
     }
     LOG("Finished\n");
+
+    return 0;
 }

@@ -1,1 +1,2 @@
 # mushroom
+gcc -g *.c
